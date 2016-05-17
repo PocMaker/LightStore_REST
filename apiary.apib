@@ -13,6 +13,14 @@ La partie Operators de l'API donne les information relative aux utilisateurs.
 ### Liste de tous les utilisateurs [GET]
 
 Retourne l'ensemble des utilisateurs avec leurs informations.
++ Response 401
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
++ Request
+    + Headers
+
+            Authorization: Basic ABC123
 
 + Response 200 (application/json)
 
@@ -39,7 +47,7 @@ Retourne l'ensemble des utilisateurs avec leurs informations.
 
 ### Créer un nouvelle utilisateur [POST]
 
-Vous pouvez créer un nouvelle utilisateur avec un login, prénom, nom et email optionnel.
+Vous pouvez créer un nouvel utilisateur avec un login, prénom, nom et email optionnel.
 
 + Request (application/json)
 
@@ -54,7 +62,7 @@ Vous pouvez créer un nouvelle utilisateur avec un login, prénom, nom et email 
 
     + Headers
 
-            Location: /operators/23
+            Location: /operators/2
 
     + Body
 
@@ -63,7 +71,43 @@ Vous pouvez créer un nouvelle utilisateur avec un login, prénom, nom et email 
                 "Login": "bledieu",
                 "Email": "bledieu@tesfri.fr",
                 "FirstName": "Baptiste",
-                "Id": 23,
+                "Id": 2,
+                "LastName": "Ledieu",
+                "ModifiedDate": "2016-05-17T13:30:01.4170000"
+            }
+            
+            
+## Modifier un utilisateur [/operators/{utilisateur_id}]
+
++ Parameters
+    + utilisateur_id (number) - ID (entier) de l'utilisateur 
+
+### Update [PUT]
+
+Vous pouvez modifier utilisateur existant.
+
++ Request (application/json)
+
+        {
+            "Email": "bledieu@tesfri.fr",
+            "FirstName": "Baptiste",
+            "LastName": "Ledieu",
+        } 
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /operators/2
+
+    + Body
+
+            {
+                "IsPasswordDefined": false,
+                "Login": "bledieu",
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "Id": 2,
                 "LastName": "Ledieu",
                 "ModifiedDate": "2016-05-17T13:30:01.4170000"
             }
