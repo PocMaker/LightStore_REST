@@ -1,22 +1,19 @@
 FORMAT: 1A
 HOST: http://polls.apiblueprint.org/
 
-# LightStoreOperators
+# LightStore
 
-LightStore est une API permettant la gestion minimal d'un entrepots. En particulier l'accés aux fiches article.
-La partie Operators de l'API donne les information relative aux utilisateurs.
+Light is an API for minimalist storage managment. In particular, get the product details and define user ou can acces 
+to the API.
 
 # Group utilisateurs
 
-## Informations sur les utilisateurs [/operators]
+## Users managment [/operators]
 
-### Liste de tous les utilisateurs [GET]
+### Detail list of all users [GET]
 
-Retourne l'ensemble des utilisateurs avec leurs informations.
-+ Response 401
-    + Headers
+Return all the users with all their informations except passwords .
 
-            WWW-Authenticate: Basic realm="protected"
 + Request
     + Headers
 
@@ -44,28 +41,36 @@ Retourne l'ensemble des utilisateurs avec leurs informations.
                 "ModifiedDate": "2016-05-17T13:30:01.4170000"
             }
         ] 
+        
++ Response 401
+    + Headers
 
-### Créer un nouvelle utilisateur [POST]
+            WWW-Authenticate: Basic realm="protected"
 
-Vous pouvez créer un nouvel utilisateur avec un login, prénom, nom et email optionnel.
+### Create a new user [POST]
+
+You can create a new user with a login, firstname, lastname and an optional email.
+
 
 + Request (application/json)
+    + Headers
 
-        {
-            "Login": "bledieu",
-            "Email": "bledieu@tesfri.fr",
-            "FirstName": "Baptiste",
-            "LastName": "Ledieu",
-        } 
+            Authorization: Basic ABC123
+
+    + Body
+            {
+                "Login": "bledieu",
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "LastName": "Ledieu",
+            }
 
 + Response 201 (application/json)
 
     + Headers
-
             Location: /operators/2
 
     + Body
-
             {
                 "IsPasswordDefined": false,
                 "Login": "bledieu",
@@ -76,18 +81,26 @@ Vous pouvez créer un nouvel utilisateur avec un login, prénom, nom et email op
                 "ModifiedDate": "2016-05-17T13:30:01.4170000"
             }
             
+ + Response 401
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
             
-## Modifier un utilisateur [/operators/{utilisateur_id}]
+            
+## Update a user [/operators/{utilisateur_id}]
 
 + Parameters
-    + utilisateur_id (number) - ID (entier) de l'utilisateur 
+    + user_id: `2` (integer, required) - ID of the current user. 
 
 ### Update [PUT]
 
-Vous pouvez modifier utilisateur existant.
+you can update the informations of a user excepted the login.
 
 + Request (application/json)
+    + Headers
 
+            Authorization: Basic ABC123
+    + Body
         {
             "Email": "bledieu@tesfri.fr",
             "FirstName": "Baptiste",
@@ -111,3 +124,19 @@ Vous pouvez modifier utilisateur existant.
                 "LastName": "Ledieu",
                 "ModifiedDate": "2016-05-17T13:30:01.4170000"
             }
+# Group login
+
+# LightStore Login
+
+Login is a simple API allowing to know if operator should define its password during log on.
+
+## Login [/login/{login}]
+
+### Know if specified login should define its password [GET]
+
++ Parameters
+    + login: `bledieu` (string, required) - Operator login to use LightStore application.
+        
++ Response 200 (text/plain)
+Response true if a valid typed login have to define its password during the first logon step.
+    + true
