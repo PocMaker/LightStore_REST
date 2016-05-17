@@ -3,12 +3,11 @@ HOST: https://svr-grind.tesfri.intra:8084/
 
 # LightStore
 
-Light is an API for minimalist storage managment. In particular, get the product details and define operator ou can acces 
-to the API.
+LightStore is an API for minimalist storage managment. In particular, get the product details and define operator authorization to the API.
 
 # Group Operators
 
-## General operation on Operators [/operators]
+## General tasks on Operators [/operators]
 
 ### Detail list of all Operators [GET]
 
@@ -97,7 +96,7 @@ You can create a new operator with a login, firstname, lastname and an optional 
 
 ### Update [PUT]
 
-you can update the informations of an operator excepted the login.
+You can update the informations of an operator excepted the login.
 
 + Request (application/json)
 
@@ -112,7 +111,7 @@ you can update the informations of an operator excepted the login.
                 "LastName": "Ledieu",
             } 
 
-+ Response 201 (application/json)
++ Response 200 (application/json)
 
     + Headers
 
@@ -137,7 +136,7 @@ you can update the informations of an operator excepted the login.
             
 ### Get operator details [GET]
 
-you can get the informations of an operator excepted the password.
+You can get the informations of an operator excepted the password.
 
 + Request (application/json)
 
@@ -167,7 +166,7 @@ you can get the informations of an operator excepted the password.
 
 ### Delete [DELETE]
 
-you can delete an operator.
+You can delete an operator.
 
 + Request (application/json)
 
