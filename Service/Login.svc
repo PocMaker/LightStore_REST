@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="LightStore.Service.Login" CodeBehind="Login.svc.cs" %>

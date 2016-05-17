@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightStore", "LightStore.csproj", "{F08693C0-E090-48AB-8E38-1755E6FFD952}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightStore", "LightStore.csproj", "{1F36E179-9F2C-45C7-8C03-51DBC503758D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightStore.Test", "..\LightStore.Test\LightStore.Test.csproj", "{340A41B2-036C-4FB8-B837-CA0C1727784F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F08693C0-E090-48AB-8E38-1755E6FFD952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F08693C0-E090-48AB-8E38-1755E6FFD952}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F08693C0-E090-48AB-8E38-1755E6FFD952}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F08693C0-E090-48AB-8E38-1755E6FFD952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F36E179-9F2C-45C7-8C03-51DBC503758D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F36E179-9F2C-45C7-8C03-51DBC503758D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F36E179-9F2C-45C7-8C03-51DBC503758D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F36E179-9F2C-45C7-8C03-51DBC503758D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{340A41B2-036C-4FB8-B837-CA0C1727784F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{340A41B2-036C-4FB8-B837-CA0C1727784F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{340A41B2-036C-4FB8-B837-CA0C1727784F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{340A41B2-036C-4FB8-B837-CA0C1727784F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
