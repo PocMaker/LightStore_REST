@@ -1,18 +1,18 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: https://svr-grind.tesfri.intra:8084/
 
 # LightStore
 
-Light is an API for minimalist storage managment. In particular, get the product details and define user ou can acces 
+Light is an API for minimalist storage managment. In particular, get the product details and define operator ou can acces 
 to the API.
 
-# Group utilisateurs
+# Group Operators
 
-## Users managment [/operators]
+## General operation on Operators [/operators]
 
-### Detail list of all users [GET]
+### Detail list of all Operators [GET]
 
-Return all the users with all their informations except passwords .
+Return all the operators with all their informations except passwords .
 
 + Request
     + Headers
@@ -47,9 +47,9 @@ Return all the users with all their informations except passwords .
 
             WWW-Authenticate: Basic realm="protected"
 
-### Create a new user [POST]
+### Create a new operator [POST]
 
-You can create a new user with a login, firstname, lastname and an optional email.
+You can create a new operator with a login, firstname, lastname and an optional email.
 
 
 + Request (application/json)
@@ -90,16 +90,17 @@ You can create a new user with a login, firstname, lastname and an optional emai
             WWW-Authenticate: Basic realm="protected"
             
             
-## Update a user [/operators/{user_id}]
+## Manage an operator [/operators/{operator_id}]
 
 + Parameters
-    + user_id: `2` (integer, required) - ID of the current user. 
+    + operator_id: `2` (integer, required) - ID of the current operator. 
 
 ### Update [PUT]
 
-you can update the informations of a user excepted the login.
+you can update the informations of an operator excepted the login.
 
 + Request (application/json)
+
     + Headers
 
             Authorization: Basic ABC123
@@ -128,6 +129,60 @@ you can update the informations of a user excepted the login.
                 "LastName": "Ledieu",
                 "ModifiedDate": "2016-05-17T13:30:01.4170000"
             }
+            
++ Response 401
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
+            
+### Get operator details [GET]
+
+you can get the informations of an operator excepted the password.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ABC123
+   
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "IsPasswordDefined": false,
+                "Login": "bledieu",
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "Id": 2,
+                "LastName": "Ledieu",
+                "ModifiedDate": "2016-05-17T13:30:01.4170000"
+            }
+            
++ Response 401
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
+
+### Delete [DELETE]
+
+you can delete an operator.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ABC123
+    
+
++ Response 204
+
++ Response 401
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
+
 # Group login
 
 # LightStore Login
@@ -136,7 +191,7 @@ Login is a simple API allowing to know if operator should define its password du
 
 ## Login [/login/{login}]
 
-### Know if specified login should define its password [GET]
+### Password defined [GET]
 Response true if a valid typed login have to define its password during the first logon step.
 + Parameters
     + login: `bledieu` (string, required) - Operator login to use LightStore application.
