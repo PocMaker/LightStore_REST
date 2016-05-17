@@ -58,6 +58,7 @@ You can create a new user with a login, firstname, lastname and an optional emai
             Authorization: Basic ABC123
 
     + Body
+    
             {
                 "Login": "bledieu",
                 "Email": "bledieu@tesfri.fr",
@@ -68,9 +69,11 @@ You can create a new user with a login, firstname, lastname and an optional emai
 + Response 201 (application/json)
 
     + Headers
+    
             Location: /operators/2
 
     + Body
+    
             {
                 "IsPasswordDefined": false,
                 "Login": "bledieu",
@@ -81,13 +84,13 @@ You can create a new user with a login, firstname, lastname and an optional emai
                 "ModifiedDate": "2016-05-17T13:30:01.4170000"
             }
             
- + Response 401
++ Response 401
     + Headers
 
             WWW-Authenticate: Basic realm="protected"
             
             
-## Update a user [/operators/{utilisateur_id}]
+## Update a user [/operators/{user_id}]
 
 + Parameters
     + user_id: `2` (integer, required) - ID of the current user. 
@@ -101,11 +104,12 @@ you can update the informations of a user excepted the login.
 
             Authorization: Basic ABC123
     + Body
-        {
-            "Email": "bledieu@tesfri.fr",
-            "FirstName": "Baptiste",
-            "LastName": "Ledieu",
-        } 
+    
+            {
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "LastName": "Ledieu",
+            } 
 
 + Response 201 (application/json)
 
@@ -133,10 +137,10 @@ Login is a simple API allowing to know if operator should define its password du
 ## Login [/login/{login}]
 
 ### Know if specified login should define its password [GET]
-
+Response true if a valid typed login have to define its password during the first logon step.
 + Parameters
     + login: `bledieu` (string, required) - Operator login to use LightStore application.
         
 + Response 200 (text/plain)
-Response true if a valid typed login have to define its password during the first logon step.
-    + true
+
+        true
