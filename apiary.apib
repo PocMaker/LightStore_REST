@@ -11,37 +11,41 @@ LightStore is an API for minimalist storage managment. In particular, get the pr
 
 ### Detail list of all Operators [GET]
 
-Return all the operators with all their informations except passwords .
+Return all the operators with all their informations except passwords.
 
 + Request
+
     + Headers
 
             Authorization: Basic ABC123
 
 + Response 200 (application/json)
 
-        [
-            {
-                "IsPasswordDefined": false,
-                "Login": "SuperAdmin",
-                "Email": null,
-                "FirstName": "Super",
-                "Id": 1,
-                "LastName": "Admin",
-                "ModifiedDate": "2016-05-17T12:02:10.4730000"
-            },
-            {
-                "IsPasswordDefined": false,
-                "Login": "bledieu",
-                "Email": "bledieu@tesfri.fr",
-                "FirstName": "Baptiste",
-                "Id": 2,
-                "LastName": "Ledieu",
-                "ModifiedDate": "2016-05-17T13:30:01.4170000"
-            }
-        ] 
+    + Body
+        
+            [
+                {
+                    "IsPasswordDefined": false,
+                    "Login": "SuperAdmin",
+                    "Email": null,
+                    "FirstName": "Super",
+                    "Id": 1,
+                    "LastName": "Admin",
+                    "ModifiedDate": "2016-05-17T12:02:10.4730000"
+                },
+                {
+                    "IsPasswordDefined": false,
+                    "Login": "bledieu",
+                    "Email": "bledieu@tesfri.fr",
+                    "FirstName": "Baptiste",
+                    "Id": 2,
+                    "LastName": "Ledieu",
+                    "ModifiedDate": "2016-05-17T13:30:01.4170000"
+                }
+            ] 
         
 + Response 401
+
     + Headers
 
             WWW-Authenticate: Basic realm="protected"
@@ -52,10 +56,11 @@ You can create a new operator with a login, firstname, lastname and an optional 
 
 
 + Request (application/json)
+
     + Headers
 
             Authorization: Basic ABC123
-
+            
     + Body
     
             {
@@ -103,22 +108,19 @@ You can update the informations of an operator excepted the login.
     + Headers
 
             Authorization: Basic ABC123
+            
     + Body
     
             {
                 "Email": "bledieu@tesfri.fr",
                 "FirstName": "Baptiste",
                 "LastName": "Ledieu",
-            } 
+            }
 
 + Response 200 (application/json)
 
-    + Headers
-
-            Location: /operators/2
-
     + Body
-
+    
             {
                 "IsPasswordDefined": false,
                 "Login": "bledieu",
@@ -128,8 +130,9 @@ You can update the informations of an operator excepted the login.
                 "LastName": "Ledieu",
                 "ModifiedDate": "2016-05-17T13:30:01.4170000"
             }
-            
+
 + Response 401
+
     + Headers
 
             WWW-Authenticate: Basic realm="protected"
@@ -143,7 +146,6 @@ You can get the informations of an operator excepted the password.
     + Headers
 
             Authorization: Basic ABC123
-   
 
 + Response 201 (application/json)
 
@@ -181,6 +183,41 @@ You can delete an operator.
     + Headers
 
             WWW-Authenticate: Basic realm="protected"
+            
+### Update password [PATCH]
+
+You can update the password of an opertaor with the current and the new passwords.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ABC123
+    + Body
+    
+            {
+                "Password": "jrUFdjh56",
+                "NewPassword": "YTght85"
+            } 
+
++ Response 200 (application/json)
+
+     + Body
+
+            {
+                "IsPasswordDefined": true,
+                "Login": "bledieu",
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "Id": 2,
+                "LastName": "Ledieu",
+                "ModifiedDate": "2016-05-17T13:30:01.4170000"
+            }
+            
++ Response 401
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
 
 # Group login
 
@@ -188,46 +225,35 @@ You can delete an operator.
 
 Login is a simple API allowing to know if operator should define its password during log on.
 
-## Manage login informations [/login/{login}]
+## Manage login informations [/login/info]
 
-### Password defined [GET]
-Response true if a valid typed login have to define its password during the first logon step.
-+ Parameters
-    + login: `bledieu` (string, required) - Operator login to use LightStore application.
-        
-+ Response 200 (text/plain)
-
-        true
-        
-### Update password [PUT]
-
-You can update the password of an operator. The login, the current password and the new one are required.
+### Password defined [PUT]
+Determine if the password has been defined (in place of the default one).
 
 + Request (application/json)
-
-    + Headers
 
     + Body
     
             { 
-                "Login": "bledieu",
-                "Password" : "RFGzer66",
-                "NewPassword": "Ygfrfd58"
-            } 
-
-+ Response 200 (text/plain)
-
-            true
+                "Login": "bledieu"
+            }
             
-            
++ Response 200 (application/json)
+
+    + Body
+        
+            {
+                "IsPasswordDefined": true,
+                "Id": 2
+            }
+        
+
 ## Login action [/login/log]
 
 ### Validate a log attempt [PUT]
 
 You can attempt to log with a login and a password.
 + Request (application/json)
-
-    + Headers
 
     + Body
     
@@ -236,6 +262,16 @@ You can attempt to log with a login and a password.
                 "Password" : "RFGzer66"
             } 
 
-+ Response 200 (text/plain)
++ Response 200 (application/json)
 
-            true
+    + Body
+
+            {
+                "IsPasswordDefined": true,
+                "Login": "bledieu",
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "Id": 2,
+                "LastName": "Ledieu",
+                "ModifiedDate": "2016-05-17T13:30:01.4170000"
+            }
