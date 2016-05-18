@@ -188,7 +188,7 @@ You can delete an operator.
 
 Login is a simple API allowing to know if operator should define its password during log on.
 
-## Login [/login/{login}]
+## Manage login informations [/login/{login}]
 
 ### Password defined [GET]
 Response true if a valid typed login have to define its password during the first logon step.
@@ -198,3 +198,44 @@ Response true if a valid typed login have to define its password during the firs
 + Response 200 (text/plain)
 
         true
+        
+### Update password [PUT]
+
+You can update the password of an operator. The login, the current password and the new one are required.
+
++ Request (application/json)
+
+    + Headers
+
+    + Body
+    
+            { 
+                "Login": "bledieu",
+                "Password" : "RFGzer66",
+                "NewPassword": "Ygfrfd58"
+            } 
+
++ Response 200 (text/plain)
+
+            true
+            
+            
+## Login action [/login/log]
+
+### Validate a log attempt [PUT]
+
+You can attempt to log with a login and a password.
++ Request (application/json)
+
+    + Headers
+
+    + Body
+    
+            { 
+                "Login": "bledieu",
+                "Password" : "RFGzer66"
+            } 
+
++ Response 200 (text/plain)
+
+            true
