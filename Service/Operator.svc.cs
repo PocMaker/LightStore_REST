@@ -1,4 +1,5 @@
-﻿using LightStore.Dal;
+﻿using LightStore.ServiceConfig;
+using LightStore.Dal;
 using LightStore.Model;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,10 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
+
+#if DEBUG
+using WebOperationContext = System.ServiceModel.Web.MockedWebOperationContext;
+#endif
 
 namespace LightStore.Service
 {
@@ -20,6 +25,7 @@ namespace LightStore.Service
         /// Retrieve all operators
         /// </summary>
         /// <returns>Operators data</returns>
+        [BasicAuthenticationInvoker]
         [OperationContract]
         [WebInvoke(UriTemplate = "Operators/", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new IList<OperatorModel> Read();
@@ -29,6 +35,7 @@ namespace LightStore.Service
         /// </summary>
         /// <param name="id">Opertor ID</param>
         /// <returns>Operator data</returns>
+        [BasicAuthenticationInvoker]
         [OperationContract]
         [WebInvoke(UriTemplate = "Operators/{id}/", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new OperatorModel ReadOne(string id);
@@ -38,6 +45,7 @@ namespace LightStore.Service
         /// </summary>
         /// <param name="data">Operator to create</param>
         /// <returns>Operator data after creation</returns>
+        [BasicAuthenticationInvoker]
         [OperationContract]
         [WebInvoke(UriTemplate = "Operators/", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new OperatorModel CreateOne(OperatorModel data);
@@ -48,6 +56,7 @@ namespace LightStore.Service
         /// <param name="data">Operator data to update</param>
         /// <param name="id">Operator ID</param>
         /// <returns>Operator data after update</returns>
+        [BasicAuthenticationInvoker]
         [OperationContract]
         [WebInvoke(UriTemplate = "Operators/{id}/", Method = "PUT", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new OperatorModel UpdateOne(OperatorModel data, string id);
@@ -56,9 +65,21 @@ namespace LightStore.Service
         /// Delete operator with the specified id
         /// </summary>
         /// <param name="id">Operator ID to delete</param>
+        [BasicAuthenticationInvoker]
         [OperationContract]
         [WebInvoke(UriTemplate = "Operators/{id}/", Method = "DELETE", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new void DeleteOne(string id);
+
+        /// <summary>
+        /// Update password for a specified login
+        /// </summary>
+        /// <param name="id">Operator ID to update</param>
+        /// <param name="credential">old and new password for operator</param>
+        /// <returns>Operator data after update</returns>
+        [BasicAuthenticationInvoker]
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Operators/{id}/", Method = "PATCH", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        OperatorModel UpdatePassword(CredentialModel credential, string id);
     }
 
     /// <summary>
@@ -120,7 +141,18 @@ namespace LightStore.Service
         {
             if (data == null) throw new ArgumentNullException("data", "Operator to create cannot be null");
 
-            return _operatorDal.Insert(data);
+            OperatorModel ope = null;
+            try
+            {
+                ope = _operatorDal.Insert(data);
+            }
+            catch (Exception e)
+            {
+                this.ThrowFaultException(e);
+            }
+
+            WebOperationContext.Current.OutgoingResponse.Location = String.Format("/operators/{0}", ope.Id);
+            return ope;
         }
 
         /// <summary>
@@ -129,13 +161,17 @@ namespace LightStore.Service
         /// <param name="data">Operator data to update</param>
         /// <param name="id">Operator ID</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="data"/> is null</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="id"/> is not equal to <paramref name="data"/> ID</exception>
+        /// <exception cref="FormatException">Thrown if <paramref name="id"/> is not a strictly positive numeric</exception>
         /// <returns>Operator data after update</returns>
         public OperatorModel UpdateOne(OperatorModel data, string id)
         {
             if (data == null) throw new ArgumentNullException("data", "Operator to create cannot be null");
-            if (data.Id.ToString() != id) throw new ArgumentException("Operator id and parameter id doesn't match", "id");
 
+            int opeID;
+            if (!int.TryParse(id, out opeID)) throw new FormatException("id is not a numeric value");
+            if (opeID <= 0) throw new FormatException("id have to be a positive value");
+            data.Id = opeID;
+            
             return _operatorDal.Update(data);
         }
 
@@ -152,6 +188,30 @@ namespace LightStore.Service
             if (opeID <= 0) throw new FormatException("id have to be a positive value");
 
             _operatorDal.Delete(opeID);
+        }
+
+        /// <summary>
+        /// Update password for a specified login
+        /// </summary>
+        /// <param name="id">Operator ID to update</param>
+        /// <param name="credential">old and new password for operator</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="credential"/> is null</exception>
+        /// <exception cref="FormatException">Thrown when <paramref name="id"/> is not a strictly positive numeric data</exception>
+        /// <returns>Operator data after update</returns>
+        public OperatorModel UpdatePassword(CredentialModel credential, string id)
+        {
+            if (credential == null) throw new ArgumentNullException("credential", "Credential cannot be null");
+
+            int opeID;
+
+            if (!int.TryParse(id, out opeID)) throw new FormatException("id is not a numeric value");
+            if (opeID <= 0) throw new FormatException("id have to be a positive value");
+
+            OperatorModel ope = ReadOne(id);
+            ope =_operatorDal.LogIn(ope.Login, credential.Password);
+            ope = _operatorDal.Update(opeID, credential.NewPassword);
+
+            return ope;
         }
 
         #endregion

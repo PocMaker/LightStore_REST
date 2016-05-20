@@ -1,10 +1,19 @@
 ﻿using LightStore.Dal;
+using LightStore.Model;
+using LightStore.ServiceConfig;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Security.Authentication;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 using System.Text;
+
+#if DEBUG
+using WebOperationContext = System.ServiceModel.Web.MockedWebOperationContext;
+#endif
 
 namespace LightStore.Service
 {
@@ -17,10 +26,20 @@ namespace LightStore.Service
         /// <summary>
         /// Define if current login have to set its password
         /// </summary>
-        /// <param name="login">Current login to watch</param>
-        /// <returns>True if password should be defined on login</returns>
+        /// <param name="credential">Current login to watch</param>
+        /// <returns>Id and password definition info for login</returns>
         [OperationContract]
-        bool ShouldDefinePassword(string login);
+        [WebInvoke(UriTemplate = "Login/info/", Method = "PUT", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        IdIsPasswordDefinedModel IsPasswordDefined(CredentialModel credential);
+
+        /// <summary>
+        /// Log into LightStore system
+        /// </summary>
+        /// <param name="credential">Login and password informations</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Login/log/", Method = "PUT", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        OperatorModel LogIn(CredentialModel credential);
     }
 
     /// <summary>
@@ -29,6 +48,7 @@ namespace LightStore.Service
     public class Login : ILogin
     {
         private readonly IOperatorDal _operatorDal;
+        private readonly CustomUserNameValidator _validator;
 
         /// <summary>
         /// Interact with DB
@@ -43,17 +63,34 @@ namespace LightStore.Service
         {
             if (operatorDal == null) throw new ArgumentNullException("operatorDal", "Mocked Dal cannot be null");
             _operatorDal = operatorDal;
+            _validator = new CustomUserNameValidator(_operatorDal);
         }
 
         /// <summary>
         /// Define if current login have to set its password
         /// </summary>
-        /// <param name="login">Current login to watch</param>
+        /// <param name="credential">Current login to watch</param>
+        /// <exception cref="InvalidCredentialException">Thrown when login does not exist</exception>
         /// <returns>True if password should be defined on login</returns>
-        public bool ShouldDefinePassword(string login)
+        public IdIsPasswordDefinedModel IsPasswordDefined(CredentialModel credential)
         {
-            
-            return true;
+            OperatorModel ope = _operatorDal.Select(credential.Login);
+            if (ope == null) throw new InvalidCredentialException();
+
+            IdIsPasswordDefinedModel result = new IdIsPasswordDefinedModel { Id = ope.Id, IsPasswordDefined = ope.IsPasswordDefined };
+            return result;
+        }
+
+        /// <summary>
+        /// Log into LightStore system
+        /// </summary>
+        /// <param name="credential">Login and password informations</param>
+        /// <exception cref="SqlException">Thrown when login or password is wrong</exception>
+        /// <returns></returns>
+        public OperatorModel LogIn(CredentialModel credential)
+        {
+            OperatorModel ope = _validator.ValidateCredential(credential.Login, credential.Password);
+            return ope;
         }
     }
 }

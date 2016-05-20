@@ -49,7 +49,9 @@
     <Reference Include="Microsoft.ServiceModel.Web">
       <HintPath>..\..\Temp\AdventureWorksService\External Dependencies\Microsoft.ServiceModel.Web.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.IdentityModel" />
     <Reference Include="System.ServiceModel.Activation" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -68,6 +70,10 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.Serialization" />
+    <Reference Include="WCFMock">
+      <HintPath>..\..\Temp\AdventureWorksService\UnitTests\bin\WCFMock.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Service\Login.svc" />
@@ -75,16 +81,19 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller\CredentialHostFactory.cs" />
-    <Compile Include="Controller\CredentialProvider.cs" />
-    <Compile Include="Controller\CustomErrorHandler.cs" />
-    <Compile Include="Controller\ErrorHandlerServiceBehavior.cs" />
+    <Compile Include="ServiceConfig\BasicAuthenticationInvoker.cs" />
+    <Compile Include="ServiceConfig\CustomUserNameValidator.cs" />
+    <Compile Include="ServiceConfig\ExtendedWebHttpElement.cs" />
+    <Compile Include="ServiceConfig\JsonErrorHandler.cs" />
+    <Compile Include="ServiceConfig\ExtendedWebHttpBehavior.cs" />
     <Compile Include="Dal\ABaseDal.cs" />
     <Compile Include="Dal\ICrudDalT.cs" />
     <Compile Include="Dal\OperatorDal.cs" />
-    <Compile Include="Model\BaseOperatorModel.cs" />
+    <Compile Include="Model\CredentialModel.cs" />
+    <Compile Include="Model\IdIsPasswordDefinedModel.cs" />
+    <Compile Include="Model\JsonFaultModel.cs" />
+    <Compile Include="Model\LoginModel.cs" />
     <Compile Include="Model\OperatorModel.cs" />
-    <Compile Include="Model\OperatorWithPasswordModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\AServiceBase.cs" />
     <Compile Include="Service\IServiceCrudT.cs" />

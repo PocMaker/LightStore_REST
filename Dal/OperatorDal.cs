@@ -20,6 +20,23 @@ namespace LightStore.Dal
         /// <param name="login">Login of wanted operator</param>
         /// <returns>An OperatorModel describing the required operator</returns>
         OperatorModel Select(string login);
+
+        /// <summary>
+        /// Update password for operator with specified id
+        /// </summary>
+        /// <param name="id">Operator Id</param>
+        /// <param name="password">New password for operator</param>
+        /// <returns>Updated operator</returns>
+        OperatorModel Update(int id, string password);
+
+        /// <summary>
+        /// Check if login and associated password match in DB
+        /// </summary>
+        /// <param name="login">Operator login</param>
+        /// <param name="password">Current operator password</param>
+        /// <exception cref="SqlException">Thrown when login or password is wrong</exception>
+        /// <returns>Matched operator data</returns>
+        OperatorModel LogIn(string login, string password);
     }
 
     /// <summary>
@@ -119,8 +136,7 @@ namespace LightStore.Dal
                     command.Parameters.Add("@p_firstName", SqlDbType.VarChar).Value = item.FirstName;
                     command.Parameters.Add("@p_lastName", SqlDbType.VarChar).Value = item.LastName;
                     command.Parameters.Add("@p_email", SqlDbType.VarChar).Value = item.Email;
-                    if (item is OperatorWithPasswordModel) command.Parameters.Add("@p_password", SqlDbType.VarChar).Value = ((OperatorWithPasswordModel)item).Password;
-
+                    
                     var operators = this.ConvertDataTableToOperators(command);
                     return operators.First();
                 }
@@ -155,6 +171,59 @@ namespace LightStore.Dal
                         if (e.State == 255 && e.Number == 16) return false;
                         throw;
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Check if login and associated password match in DB
+        /// </summary>
+        /// <param name="login">Operator login</param>
+        /// <param name="password">Current operator password</param>
+        /// <exception cref="SqlException">Thrown when login or password is wrong</exception>
+        /// <returns>Matched operator data</returns>
+        public OperatorModel LogIn(string login, string password)
+        {
+            if (String.IsNullOrWhiteSpace(login)) throw new ArgumentNullException("login", "Login cannot be null");
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand command = new SqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "Administration.uspLoginOperator";
+                    command.Parameters.Add("@p_login", SqlDbType.VarChar).Value = login;
+                    command.Parameters.Add("@p_password", SqlDbType.VarChar).Value = password;
+                    
+                    var operators = this.ConvertDataTableToOperators(command);
+                    return operators.First();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update password for operator with specified id
+        /// </summary>
+        /// <param name="id">Operator Id</param>
+        /// <param name="password">New password for operator</param>
+        /// <returns>Updated operator</returns>
+        public OperatorModel Update(int id, string password)
+        {
+            if (id == 0) throw new ArgumentNullException("id", "Id cannot be null");
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand command = new SqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "Administration.uspUpdateOperator";
+                    command.Parameters.Add("@p_id", SqlDbType.Int).Value = id;
+                    command.Parameters.Add("@p_password", SqlDbType.VarChar).Value = password;
+
+                    var operators = this.ConvertDataTableToOperators(command);
+                    return operators.First();
                 }
             }
         }
@@ -199,8 +268,12 @@ namespace LightStore.Dal
                     da.Fill(dt);
 
                     IList<OperatorModel> operators = (from DataRow row in dt.Rows
-                                                      select new OperatorModel(row.Field<int>("Id"), row.Field<string>("Login"), row.Field<string>("FirstName"), row.Field<string>("LastName"))
+                                                      select new OperatorModel
                                                       {
+                                                          Id = row.Field<int>("Id"),
+                                                          Login = row.Field<string>("Login"),
+                                                          FirstName = row.Field<string>("FirstName"),
+                                                          LastName = row.Field<string>("LastName"),
                                                           Email = row.Field<string>("Email"),
                                                           internalModifiedDate = row.Field<DateTime>("ModifiedDate"),
                                                           IsPasswordDefined = row.Field<bool>("IsPasswordDefined"),

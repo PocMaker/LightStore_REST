@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -11,16 +12,36 @@ namespace LightStore.Model
     /// Class describing an operator int the LightStore environnement
     /// </summary>
     [DataContract]
-    public class OperatorModel : BaseOperatorModel
+    public class OperatorModel : IEquatable<OperatorModel>
     {
-        [DataMember(Name = "Id")]
-        private readonly int _id;
+        private int _id;
         /// <summary>
         /// Unique id in DB (always strictly positive)
         /// </summary>
+        [DataMember]
         public int Id
         {
             get { return _id; }
+            set
+            {
+                if (value < 0) throw new ArgumentOutOfRangeException("Id", "Id cannot be negative");
+                _id = value;
+            }
+        }
+
+        private string _login;
+        /// <summary>
+        /// Unique login
+        /// </summary>
+        [DataMember]
+        public string Login
+        {
+            get { return _login; }
+            set
+            {
+                if (String.IsNullOrWhiteSpace(value)) throw new ArgumentNullException("login", "Login cannot be empty");
+                _login = value;
+            }
         }
 
         private string _firstName;
@@ -28,6 +49,7 @@ namespace LightStore.Model
         /// First name (required)
         /// </summary>
         [DataMember(IsRequired = true)]
+        [Required(ErrorMessage = "FirstName is required")]
         public string FirstName
         {
             get { return _firstName; }
@@ -44,6 +66,7 @@ namespace LightStore.Model
         /// Last name (required)
         /// </summary>
         [DataMember(IsRequired = true)]
+        [Required(ErrorMessage = "LastName is required")]
         public string LastName
         {
             get { return _lastName; }
@@ -55,9 +78,16 @@ namespace LightStore.Model
         }
 
         /// <summary>
+        /// Is operator password defined
+        /// </summary>
+        [DataMember]
+        public bool IsPasswordDefined { get; set; }
+
+        /// <summary>
         /// Main contact email (optional)
         /// </summary>
         [DataMember]
+        [RegularExpression(@"[^\@]+\@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+", ErrorMessage = "E-mail is invalid")]
         public string Email { get; set; }
 
         internal DateTime internalModifiedDate { get; set; }
@@ -71,28 +101,24 @@ namespace LightStore.Model
             set { }
         }
 
-        /// <summary>
-        /// Create a new operator
-        /// </summary>
-        /// <param name="login">Required unique login</param>
-        /// <param name="firstName">Required firstname</param>
-        /// <param name="lastName">Required lastname</param>
-        public OperatorModel(string login, string firstName, string lastName) : base(login)
+        #region Equatable
+
+        ///
+        public override bool Equals(object obj)
         {
-            FirstName = firstName;
-            LastName = lastName;
+            return Equals((OperatorModel)obj);
         }
-        /// <summary>
-        /// Describe an existing operator
-        /// </summary>
-        /// <param name="id">Unique ID in DB</param>
-        /// <param name="login">Required unique login</param>
-        /// <param name="firstName">Required firstname</param>
-        /// <param name="lastName">Required lastname</param>
-        public OperatorModel(int id, string login, string firstName, string lastName) : this(login, firstName, lastName)
+        ///
+        public bool Equals(OperatorModel other)
         {
-            if (id < 0) throw new ArgumentOutOfRangeException("Id", "Id cannot be negative");
-            _id = id;
+            return GetHashCode() == other.GetHashCode();
         }
+        ///
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        #endregion
     }
 }

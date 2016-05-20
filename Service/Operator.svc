@@ -1,1 +1,1 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="LightStore.Service.Operator" CodeBehind="Operator.svc.cs" Factory="LightStore.Controller.CredentialHostFactory"  %>
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="LightStore.Service.Operator" CodeBehind="Operator.svc.cs" %>
