@@ -93,6 +93,15 @@ You can create a new operator with a login, firstname, lastname and an optional 
 
             WWW-Authenticate: Basic realm="protected"
             
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"OPERATOR_NULL",
+                "ErrorMessage":"no data in the request",
+                "Method":"ReadOne","StatusCode":400
+            }
+            
             
 ## Manage an operator [/operators/{operator_id}]
 
@@ -137,6 +146,36 @@ You can update the informations of an operator excepted the login.
 
             WWW-Authenticate: Basic realm="protected"
             
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"OPERATOR_NULL",
+                "ErrorMessage":"no data in the request",
+                "Method":"ReadOne","StatusCode":400
+            }
+            
++ Response 400 (application/json)
+    
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_POSITIVE",
+                "ErrorMessage":"id have to be a positive value",
+                "Method":"ReadOne","StatusCode":400
+            }
+
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_NUMERIC",
+                "ErrorMessage":"id is not a numeric value",
+                "Method":"ReadOne","StatusCode":400
+            }
+        
+
+
 ### Get operator details [GET]
 
 You can get the informations of an operator excepted the password.
@@ -166,6 +205,25 @@ You can get the informations of an operator excepted the password.
 
             WWW-Authenticate: Basic realm="protected"
 
++ Response 400 (application/json)
+    
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_POSITIVE",
+                "ErrorMessage":"id have to be a positive value",
+                "Method":"ReadOne","StatusCode":400
+            }
+
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_NUMERIC",
+                "ErrorMessage":"id is not a numeric value",
+                "Method":"ReadOne","StatusCode":400
+            }
+
 ### Delete [DELETE]
 
 You can delete an operator.
@@ -183,6 +241,25 @@ You can delete an operator.
     + Headers
 
             WWW-Authenticate: Basic realm="protected"
+            
++ Response 400 (application/json)
+    
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_POSITIVE",
+                "ErrorMessage":"id have to be a positive value",
+                "Method":"ReadOne","StatusCode":400
+            }
+
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_NUMERIC",
+                "ErrorMessage":"id is not a numeric value",
+                "Method":"ReadOne","StatusCode":400
+            }
             
 ### Update password [PATCH]
 
@@ -218,12 +295,41 @@ You can update the password of an opertaor with the current and the new password
     + Headers
 
             WWW-Authenticate: Basic realm="protected"
+            
+           
++ Response 400 (application/json)
+add error message
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_POSITIVE",
+                "ErrorMessage":"id have to be a positive value",
+                "Method":"ReadOne","StatusCode":400
+            }
 
-# Group login
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_NUMERIC",
+                "ErrorMessage":"id is not a numeric value",
+                "Method":"ReadOne","StatusCode":400
+            }
+
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"CREDENTIAL_NULL",
+                "ErrorMessage":"authentification informations not provided",
+                "Method":"ReadOne","StatusCode":400
+            }
+            
+
+# Group Login
 
 # LightStore Login
 
-Login is a simple API allowing to know if operator should define its password during log on.
+Login is an API allowing credential managment.
 
 ## Manage login informations [/login/info]
 
