@@ -45,7 +45,7 @@ namespace LightStore.Service
     /// <summary>
     /// Available actions on login time
     /// </summary>
-    public class Login : ILogin
+    public class Login : AServiceBase, ILogin
     {
         private readonly IOperatorDal _operatorDal;
         private readonly CustomUserNameValidator _validator;
@@ -75,7 +75,7 @@ namespace LightStore.Service
         public IdIsPasswordDefinedModel IsPasswordDefined(CredentialModel credential)
         {
             OperatorModel ope = _operatorDal.Select(credential.Login);
-            if (ope == null) throw new InvalidCredentialException();
+            if (ope == null) this.ThrowFaultException("INVALID_CREDENTIAL", "Login and password do not match");
 
             IdIsPasswordDefinedModel result = new IdIsPasswordDefinedModel { Id = ope.Id, IsPasswordDefined = ope.IsPasswordDefined };
             return result;
@@ -89,8 +89,17 @@ namespace LightStore.Service
         /// <returns></returns>
         public OperatorModel LogIn(CredentialModel credential)
         {
-            OperatorModel ope = _validator.ValidateCredential(credential.Login, credential.Password);
-            return ope;
+            try
+            {
+                OperatorModel ope = _validator.ValidateCredential(credential.Login, credential.Password, true);
+                if (ope == null) this.ThrowFaultException("INVALID_CREDENTIAL", "Login and password do not match");
+                return ope;
+            }
+            catch (SqlException e)
+            {
+                if (e.Class == 16 && e.State == 1) this.ThrowFaultException("INVALID_CREDENTIAL", "Login and password do not match");
+                throw;
+            }
         }
     }
 }

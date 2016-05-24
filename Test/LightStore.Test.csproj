@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.XML" />
     <Reference Include="WCFMock">
       <HintPath>..\..\Temp\AdventureWorksService\UnitTests\bin\WCFMock.dll</HintPath>
@@ -69,7 +70,7 @@
     <Compile Include="Service\LoginTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LightStore_REST\LightStore.csproj">
+    <ProjectReference Include="..\Project\LightStore.csproj">
       <Project>{1F36E179-9F2C-45C7-8C03-51DBC503758D}</Project>
       <Name>LightStore</Name>
     </ProjectReference>

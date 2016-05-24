@@ -125,8 +125,8 @@ namespace LightStore.Service
         {
             int opeID;
 
-            if (!int.TryParse(id, out opeID)) throw new FormatException("id is not a numeric value");
-            if (opeID <= 0) throw new FormatException("id have to be a positive value");
+            if (!int.TryParse(id, out opeID)) this.ThrowFaultException("ID_IS_NOT_NUMERIC","id is not a numeric value");
+            if (opeID <= 0) this.ThrowFaultException("ID_IS_NOT_POSITIVE", "id have to be a positive value");
 
             return _operatorDal.Select(opeID);
         }
@@ -139,7 +139,7 @@ namespace LightStore.Service
         /// <returns>Operator data after creation</returns>
         public OperatorModel CreateOne(OperatorModel data)
         {
-            if (data == null) throw new ArgumentNullException("data", "Operator to create cannot be null");
+            if (data == null) this.ThrowFaultException("OPERATOR_NULL", "Operator to create cannot be null");
 
             OperatorModel ope = null;
             try
@@ -165,11 +165,11 @@ namespace LightStore.Service
         /// <returns>Operator data after update</returns>
         public OperatorModel UpdateOne(OperatorModel data, string id)
         {
-            if (data == null) throw new ArgumentNullException("data", "Operator to create cannot be null");
+            if (data == null) this.ThrowFaultException("OPERATOR_NULL", "Operator to create cannot be null");
 
             int opeID;
-            if (!int.TryParse(id, out opeID)) throw new FormatException("id is not a numeric value");
-            if (opeID <= 0) throw new FormatException("id have to be a positive value");
+            if (!int.TryParse(id, out opeID)) this.ThrowFaultException("ID_IS_NOT_NUMERIC","id is not a numeric value");
+            if (opeID <= 0) this.ThrowFaultException("ID_IS_NOT_POSITIVE", "id have to be a positive value");
             data.Id = opeID;
             
             return _operatorDal.Update(data);
@@ -184,8 +184,8 @@ namespace LightStore.Service
         {
             int opeID;
 
-            if (!int.TryParse(id, out opeID)) throw new FormatException("id is not a numeric value");
-            if (opeID <= 0) throw new FormatException("id have to be a positive value");
+            if (!int.TryParse(id, out opeID)) this.ThrowFaultException("ID_IS_NOT_NUMERIC","id is not a numeric value");
+            if (opeID <= 0) this.ThrowFaultException("ID_IS_NOT_POSITIVE", "id have to be a positive value");
 
             _operatorDal.Delete(opeID);
         }
@@ -200,12 +200,12 @@ namespace LightStore.Service
         /// <returns>Operator data after update</returns>
         public OperatorModel UpdatePassword(CredentialModel credential, string id)
         {
-            if (credential == null) throw new ArgumentNullException("credential", "Credential cannot be null");
+            if (credential == null) this.ThrowFaultException("CREDENTIAL_NULL", "Operator to create cannot be null");
 
             int opeID;
 
-            if (!int.TryParse(id, out opeID)) throw new FormatException("id is not a numeric value");
-            if (opeID <= 0) throw new FormatException("id have to be a positive value");
+            if (!int.TryParse(id, out opeID)) this.ThrowFaultException("ID_IS_NOT_NUMERIC","id is not a numeric value");
+            if (opeID <= 0) this.ThrowFaultException("ID_IS_NOT_POSITIVE", "id have to be a positive value");
 
             OperatorModel ope = ReadOne(id);
             ope =_operatorDal.LogIn(ope.Login, credential.Password);

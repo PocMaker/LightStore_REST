@@ -52,13 +52,18 @@ namespace LightStore.ServiceConfig
             return (ope != null);
         }
 
+
+        public OperatorModel ValidateCredential(string userName, string password)
+        {
+            return ValidateCredential(userName, password, false);
+        }
         // This method validates users. It allows in two users, user1 and user2
         // This code is for illustration purposes only and
         // must not be used in a production environment because it is not secure.
-        public OperatorModel ValidateCredential(string userName, string password)
+        public OperatorModel ValidateCredential(string userName, string password, bool force)
         {
             Credential credential = new Credential { UserName = userName, Password = password };
-            if (AlreadyLoggedIn(credential)) return _logins[credential].Operator;
+            if (!force && AlreadyLoggedIn(credential)) return _logins[credential].Operator;
 
             OperatorModel ope = _operatorDal.LogIn(credential.UserName, credential.Password);
             if (ope == null) return null;

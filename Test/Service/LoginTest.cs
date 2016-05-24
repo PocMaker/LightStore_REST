@@ -9,6 +9,7 @@ using System.Linq;
 using WebOperationContext = System.ServiceModel.Web.MockedWebOperationContext;
 using System.ServiceModel.Web;
 using System.Security.Authentication;
+using System.ServiceModel;
 
 namespace LightStore.Test.Service
 {
@@ -47,15 +48,44 @@ namespace LightStore.Test.Service
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidCredentialException))]
+        [ExpectedException(typeof(FaultException<JsonFaultModel>))]
         public void Log_With_An_Unexisting_Pseudo_Thrown_Exception()
         {
             Login service = new Login(_repository);
             Mock<IWebOperationContext> mockCtx = new Mock<IWebOperationContext> { DefaultValue = DefaultValue.Mock };
             using (new MockedWebOperationContext(mockCtx.Object))
             {
-                CredentialModel credential = new CredentialModel { Login = Guid.NewGuid().ToString() };
+                try
+                {
+                    CredentialModel credential = new CredentialModel { Login = Guid.NewGuid().ToString() };
                 IdIsPasswordDefinedModel response = service.IsPasswordDefined(credential);
+                }
+                catch (FaultException<JsonFaultModel> e)
+                {
+                    Assert.AreEqual("INVALID_CREDENTIAL", e.Detail.ErrorCode);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FaultException<JsonFaultModel>))]
+        public void Log_With_An_Wrong_Password_Thrown_Exception()
+        {
+            Login service = new Login(_repository);
+            Mock<IWebOperationContext> mockCtx = new Mock<IWebOperationContext> { DefaultValue = DefaultValue.Mock };
+            using (new MockedWebOperationContext(mockCtx.Object))
+            {
+                try
+                {
+                    CredentialModel credential = new CredentialModel { Login = "bledieu", Password = "xxx" };
+                    OperatorModel response = service.LogIn(credential);
+                }
+                catch (FaultException<JsonFaultModel> e)
+                {
+                    Assert.AreEqual("INVALID_CREDENTIAL", e.Detail.ErrorCode);
+                    throw;
+                }
             }
         }
     }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using LightStore.Dal;
 using LightStore.Test.Dal;
 using System.ServiceModel.Web;
+using System.ServiceModel;
 
 namespace LightStore.Test.Service
 {
@@ -56,7 +57,7 @@ namespace LightStore.Test.Service
         }
 
         [TestMethod]
-        [ExpectedException(typeof(FormatException))]
+        [ExpectedException(typeof(FaultException<JsonFaultModel>))]
         public void Read_With_Non_Numeric_Parameter_Throws_Exception()
         {
             //arrange
@@ -67,10 +68,11 @@ namespace LightStore.Test.Service
             {
                 var result = service.ReadOne("");
             }
-            catch (FormatException e)
+            catch (FaultException<JsonFaultModel> e)
             {
                 //assert
-                Assert.AreEqual("id is not a numeric value", e.Message);
+                Assert.AreEqual("ID_IS_NOT_NUMERIC", e.Detail.ErrorCode);
+                Assert.AreEqual("ReadOne", e.Detail.Method);
                 _mockedRepository.Verify(x => x.Select(), Times.Never);
                 _mockedRepository.Verify(x => x.Select(It.IsAny<int>()), Times.Never);
                 throw e;
@@ -102,7 +104,7 @@ namespace LightStore.Test.Service
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(FaultException<JsonFaultModel>))]
         public void Create_Null_Operator_Throws_Exception()
         {
             Operator service = new Operator(_repository);
@@ -111,9 +113,9 @@ namespace LightStore.Test.Service
             {
                 var result = service.CreateOne(null);
             }
-            catch (ArgumentNullException e)
+            catch (FaultException<JsonFaultModel> e)
             {
-                Assert.AreEqual("data", e.ParamName);
+                Assert.AreEqual("OPERATOR_NULL", e.Detail.ErrorCode);
                 _mockedRepository.Verify(x => x.Insert(It.IsAny<OperatorModel>()), Times.Never);
                 throw e;
             }
@@ -148,7 +150,7 @@ namespace LightStore.Test.Service
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(FaultException<JsonFaultModel>))]
         public void Update_Null_Operator_Throws_Exception()
         {
             Operator service = new Operator(_repository);
@@ -157,9 +159,9 @@ namespace LightStore.Test.Service
             {
                 var result = service.UpdateOne(null, "2");
             }
-            catch (ArgumentNullException e)
+            catch (FaultException<JsonFaultModel> e)
             {
-                Assert.AreEqual("data", e.ParamName);
+                Assert.AreEqual("OPERATOR_NULL", e.Detail.ErrorCode);
                 _mockedRepository.Verify(x => x.Update(It.IsAny<OperatorModel>()), Times.Never);
                 throw e;
             }
@@ -179,7 +181,7 @@ namespace LightStore.Test.Service
         }
 
         [TestMethod]
-        [ExpectedException(typeof(FormatException))]
+        [ExpectedException(typeof(FaultException<JsonFaultModel>))]
         public void Delete_Operator_With_Non_Numeric_Id_Throws_Exception()
         {
             Operator service = new Operator(_repository);
@@ -188,15 +190,15 @@ namespace LightStore.Test.Service
             {
                 service.DeleteOne("");
             }
-            catch (FormatException e)
+            catch (FaultException<JsonFaultModel> e)
             {
-                Assert.AreEqual("id is not a numeric value", e.Message);
+                Assert.AreEqual("ID_IS_NOT_NUMERIC", e.Detail.ErrorCode);
                 throw e;
             }
         }
 
         [TestMethod]
-        [ExpectedException(typeof(FormatException))]
+        [ExpectedException(typeof(FaultException<JsonFaultModel>))]
         public void Delete_Operator_With_Negative_Id_Throws_Exception()
         {
             Operator service = new Operator(_repository);
@@ -205,9 +207,9 @@ namespace LightStore.Test.Service
             {
                 service.DeleteOne("-12");
             }
-            catch (FormatException e)
+            catch (FaultException<JsonFaultModel> e)
             {
-                Assert.AreEqual("id have to be a positive value", e.Message);
+                Assert.AreEqual("ID_IS_NOT_POSITIVE", e.Detail.ErrorCode);
                 throw e;
             }
         }
