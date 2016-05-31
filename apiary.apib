@@ -381,3 +381,25 @@ You can attempt to log with a login and a password.
                 "LastName": "Ledieu",
                 "ModifiedDate": "2016-05-17T13:30:01.4170000"
             }
+            
+## Login action [/login/captcha]
+
+### Validate a captcha response [POST]
+
+Valider une reponse au captcha du login.
+
++ Request (application/json)
+
+    + Body
+    
+            { 
+                "response": "458"
+            } ajout 
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+            }
