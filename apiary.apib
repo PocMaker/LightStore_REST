@@ -1,0 +1,405 @@
+FORMAT: 1A
+HOST: https://svr-grind.tesfri.intra:8084/
+
+# LightStore
+
+LightStore is an API for minimalist storage managment. In particular, get the product details and define operator authorization to the API.
+
+# Group Operators
+
+## General tasks on Operators [/operators]
+
+### Detail list of all Operators [GET]
+
+Return all the operators with all their informations except passwords.
+
++ Request
+
+    + Headers
+
+            Authorization: Basic ABC123
+
++ Response 200 (application/json)
+
+    + Body
+        
+            [
+                {
+                    "IsPasswordDefined": false,
+                    "Login": "SuperAdmin",
+                    "Email": null,
+                    "FirstName": "Super",
+                    "Id": 1,
+                    "LastName": "Admin",
+                    "ModifiedDate": "2016-05-17T12:02:10.4730000"
+                },
+                {
+                    "IsPasswordDefined": false,
+                    "Login": "bledieu",
+                    "Email": "bledieu@tesfri.fr",
+                    "FirstName": "Baptiste",
+                    "Id": 2,
+                    "LastName": "Ledieu",
+                    "ModifiedDate": "2016-05-17T13:30:01.4170000"
+                }
+            ] 
+        
++ Response 401
+
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
+
+### Create a new operator [POST]
+
+You can create a new operator with a login, firstname, lastname and an optional email.
+
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ABC123
+            
+    + Body
+    
+            {
+                "Login": "bledieu",
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "LastName": "Ledieu",
+            }
+
++ Response 201 (application/json)
+
+    + Headers
+    
+            Location: /operators/2
+
+    + Body
+    
+            {
+                "IsPasswordDefined": false,
+                "Login": "bledieu",
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "Id": 2,
+                "LastName": "Ledieu",
+                "ModifiedDate": "2016-05-17T13:30:01.4170000"
+            }
+            
++ Response 401
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
+            
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"OPERATOR_NULL",
+                "ErrorMessage":"no data in the request",
+                "Method":"ReadOne","StatusCode":400
+            }
+            
+            
+## Manage an operator [/operators/{operator_id}]
+
++ Parameters
+    + operator_id: `2` (integer, required) - ID of the current operator. 
+
+### Update [PUT]
+
+You can update the informations of an operator excepted the login.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ABC123
+            
+    + Body
+    
+            {
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "LastName": "Ledieu",
+            }
+
++ Response 200 (application/json)
+
+    + Body
+    
+            {
+                "IsPasswordDefined": false,
+                "Login": "bledieu",
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "Id": 2,
+                "LastName": "Ledieu",
+                "ModifiedDate": "2016-05-17T13:30:01.4170000"
+            }
+
++ Response 401
+
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
+            
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"OPERATOR_NULL",
+                "ErrorMessage":"no data in the request",
+                "Method":"ReadOne","StatusCode":400
+            }
+            
++ Response 400 (application/json)
+    
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_POSITIVE",
+                "ErrorMessage":"id have to be a positive value",
+                "Method":"ReadOne","StatusCode":400
+            }
+
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_NUMERIC",
+                "ErrorMessage":"id is not a numeric value",
+                "Method":"ReadOne","StatusCode":400
+            }
+        
+
+
+### Get operator details [GET]
+
+You can get the informations of an operator excepted the password.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ABC123
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "IsPasswordDefined": false,
+                "Login": "bledieu",
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "Id": 2,
+                "LastName": "Ledieu",
+                "ModifiedDate": "2016-05-17T13:30:01.4170000"
+            }
+            
++ Response 401
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
+
++ Response 400 (application/json)
+    
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_POSITIVE",
+                "ErrorMessage":"id have to be a positive value",
+                "Method":"ReadOne","StatusCode":400
+            }
+
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_NUMERIC",
+                "ErrorMessage":"id is not a numeric value",
+                "Method":"ReadOne","StatusCode":400
+            }
+
+### Delete [DELETE]
+
+You can delete an operator.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ABC123
+    
+
++ Response 204
+
++ Response 401
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
+            
++ Response 400 (application/json)
+    
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_POSITIVE",
+                "ErrorMessage":"id have to be a positive value",
+                "Method":"ReadOne","StatusCode":400
+            }
+
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_NUMERIC",
+                "ErrorMessage":"id is not a numeric value",
+                "Method":"ReadOne","StatusCode":400
+            }
+            
+### Update password [PATCH]
+
+You can update the password of an opertaor with the current and the new passwords.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ABC123
+    + Body
+    
+            {
+                "Password": "jrUFdjh56",
+                "NewPassword": "YTght85"
+            } 
+
++ Response 200 (application/json)
+
+     + Body
+
+            {
+                "IsPasswordDefined": true,
+                "Login": "bledieu",
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "Id": 2,
+                "LastName": "Ledieu",
+                "ModifiedDate": "2016-05-17T13:30:01.4170000"
+            }
+            
++ Response 401
+    + Headers
+
+            WWW-Authenticate: Basic realm="protected"
+            
+           
++ Response 400 (application/json)
+add error message
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_POSITIVE",
+                "ErrorMessage":"id have to be a positive value",
+                "Method":"ReadOne","StatusCode":400
+            }
+
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"ID_IS_NOT_NUMERIC",
+                "ErrorMessage":"id is not a numeric value",
+                "Method":"ReadOne","StatusCode":400
+            }
+
++ Response 400 (application/json)
+
+            {
+                "Class":"Operator",
+                "ErrorCode":"CREDENTIAL_NULL",
+                "ErrorMessage":"authentification informations not provided",
+                "Method":"ReadOne","StatusCode":400
+            }
+            
+
+# Group Login
+
+# LightStore Login
+
+Login is an API allowing credential managment.
+
+## Manage login informations [/login/info]
+
+### Password defined [PUT]
+Determine if the password has been defined (in place of the default one).
+
++ Request (application/json)
+
+    + Body
+    
+            { 
+                "Login": "bledieu"
+            }
+            
++ Response 200 (application/json)
+
+    + Body
+        
+            {
+                "IsPasswordDefined": true,
+                "Id": 2
+            }
+        
+
+## Login action [/login/log]
+
+### Validate a log attempt [PUT]
+
+You can attempt to log with a login and a password.
++ Request (application/json)
+
+    + Body
+    
+            { 
+                "Login": "bledieu",
+                "Password" : "RFGzer66"
+            } 
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "IsPasswordDefined": true,
+                "Login": "bledieu",
+                "Email": "bledieu@tesfri.fr",
+                "FirstName": "Baptiste",
+                "Id": 2,
+                "LastName": "Ledieu",
+                "ModifiedDate": "2016-05-17T13:30:01.4170000"
+            }
+            
+## Login action [/login/captcha]
+
+### Validate a captcha response [POST]
+
+Valider une reponse au captcha du login.
+
++ Request (application/json)
+
+    + Body
+    
+            { 
+                "response": "458"
+            } ajout 
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+            }
