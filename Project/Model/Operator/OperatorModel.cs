@@ -12,23 +12,8 @@ namespace LightStore.Model
     /// Class describing an operator int the LightStore environnement
     /// </summary>
     [DataContract]
-    public class OperatorModel : IEquatable<OperatorModel>
+    public class OperatorModel : AIdEquatableT<OperatorModel>
     {
-        private int _id;
-        /// <summary>
-        /// Unique id in DB (always strictly positive)
-        /// </summary>
-        [DataMember]
-        public int Id
-        {
-            get { return _id; }
-            set
-            {
-                if (value < 0) throw new ArgumentOutOfRangeException("Id", "Id cannot be negative");
-                _id = value;
-            }
-        }
-
         private string _login;
         /// <summary>
         /// Unique login
@@ -100,25 +85,5 @@ namespace LightStore.Model
             get { return internalModifiedDate.ToString("O", CultureInfo.InvariantCulture); }
             set { }
         }
-
-        #region Equatable
-
-        ///
-        public override bool Equals(object obj)
-        {
-            return Equals((OperatorModel)obj);
-        }
-        ///
-        public bool Equals(OperatorModel other)
-        {
-            return GetHashCode() == other.GetHashCode();
-        }
-        ///
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
-
-        #endregion
     }
 }

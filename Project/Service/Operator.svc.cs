@@ -119,23 +119,23 @@ namespace LightStore.Service
         /// Retrieve a specific operator
         /// </summary>
         /// <param name="id">Opertor ID</param>
-        /// <exception cref="FormatException">Thrown when <paramref name="id"/> is not a strictly positive numeric data</exception>
+        /// <exception cref="FaultException">Thrown when <paramref name="id"/> is not a strictly positive numeric data</exception>
         /// <returns>Operator data</returns>
         public OperatorModel ReadOne(string id)
         {
-            int opeID;
+            int localId;
 
-            if (!int.TryParse(id, out opeID)) this.ThrowFaultException("ID_IS_NOT_NUMERIC","id is not a numeric value");
-            if (opeID <= 0) this.ThrowFaultException("ID_IS_NOT_POSITIVE", "id have to be a positive value");
+            if (!int.TryParse(id, out localId)) this.ThrowFaultException("ID_IS_NOT_NUMERIC","id is not a numeric value");
+            if (localId <= 0) this.ThrowFaultException("ID_IS_NOT_POSITIVE", "id have to be a positive value");
 
-            return _operatorDal.Select(opeID);
+            return _operatorDal.Select(localId);
         }
 
         /// <summary>
         /// Create a new operator
         /// </summary>
         /// <param name="data">Operator to create</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="data"/> is null</exception>
+        /// <exception cref="FaultException">Thrown if <paramref name="data"/> is null</exception>
         /// <returns>Operator data after creation</returns>
         public OperatorModel CreateOne(OperatorModel data)
         {
@@ -160,8 +160,8 @@ namespace LightStore.Service
         /// </summary>
         /// <param name="data">Operator data to update</param>
         /// <param name="id">Operator ID</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="data"/> is null</exception>
-        /// <exception cref="FormatException">Thrown if <paramref name="id"/> is not a strictly positive numeric</exception>
+        /// <exception cref="FaultException">Thrown if <paramref name="data"/> is null</exception>
+        /// <exception cref="FaultException">Thrown if <paramref name="id"/> is not a strictly positive numeric</exception>
         /// <returns>Operator data after update</returns>
         public OperatorModel UpdateOne(OperatorModel data, string id)
         {
@@ -179,7 +179,7 @@ namespace LightStore.Service
         /// Delete operator with the specified id
         /// </summary>
         /// <param name="id">Operator ID to delete</param>
-        /// <exception cref="FormatException">Thrown when <paramref name="id"/> is not a strictly positive numeric data</exception>
+        /// <exception cref="FaultException">Thrown when <paramref name="id"/> is not a strictly positive numeric data</exception>
         public void DeleteOne(string id)
         {
             int opeID;
@@ -195,8 +195,8 @@ namespace LightStore.Service
         /// </summary>
         /// <param name="id">Operator ID to update</param>
         /// <param name="credential">old and new password for operator</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="credential"/> is null</exception>
-        /// <exception cref="FormatException">Thrown when <paramref name="id"/> is not a strictly positive numeric data</exception>
+        /// <exception cref="FaultException">Thrown if <paramref name="credential"/> is null</exception>
+        /// <exception cref="FaultException">Thrown when <paramref name="id"/> is not a strictly positive numeric data</exception>
         /// <returns>Operator data after update</returns>
         public OperatorModel UpdatePassword(CredentialModel credential, string id)
         {
@@ -209,7 +209,8 @@ namespace LightStore.Service
 
             OperatorModel ope = ReadOne(id);
             ope =_operatorDal.LogIn(ope.Login, credential.Password);
-            ope = _operatorDal.Update(opeID, credential.NewPassword);
+            ope = _operatorDal.Update(opeID, (credential.NewPassword ?? String.Empty));
+            CustomUserNameValidator.DropCredential(ope.Login, credential.Password);
 
             return ope;
         }

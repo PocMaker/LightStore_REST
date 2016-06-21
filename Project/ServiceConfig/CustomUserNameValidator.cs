@@ -31,8 +31,8 @@ namespace LightStore.ServiceConfig
             }
             public override int GetHashCode()
             {
-                int hash = UserName.GetHashCode();
-                hash ^= Password.GetHashCode();
+                int hash = (UserName ?? String.Empty).GetHashCode();
+                hash ^= (Password ?? String.Empty).GetHashCode();
                 return hash;
             }
         }
@@ -48,8 +48,13 @@ namespace LightStore.ServiceConfig
         public static bool Validate(string userName, string password)
         {
             CustomUserNameValidator c = new CustomUserNameValidator();
-            OperatorModel ope =c.ValidateCredential(userName,password);
+            OperatorModel ope = c.ValidateCredential(userName, password);
             return (ope != null);
+        }
+        public static void DropCredential(string userName, string password)
+        {
+            Credential credential = new Credential { UserName = userName, Password = password };
+            if (_logins.ContainsKey(credential)) _logins.Remove(credential);
         }
 
 

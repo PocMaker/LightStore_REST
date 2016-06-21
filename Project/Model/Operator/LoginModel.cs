@@ -12,7 +12,9 @@ namespace LightStore.Model
     [DataContract]
     public sealed class LoginModel
     {
-        /// <exclude/>
+        /// <summary>
+        /// Login/pseudo
+        /// </summary>
         [DataMember]
         public string Login { get; set; }
     }

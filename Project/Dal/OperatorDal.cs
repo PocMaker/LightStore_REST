@@ -10,7 +10,7 @@ using System.Globalization;
 namespace LightStore.Dal
 {
     /// <summary>
-    /// List of actions available to manage operators
+    /// CRUD actions to manage operators
     /// </summary>
     public interface IOperatorDal : ICrudDalT<OperatorModel>
     {
@@ -92,6 +92,13 @@ namespace LightStore.Dal
         /// </summary>
         /// <param name="item">A new operator</param>
         /// <exception cref="ArgumentNullException">Thrown when input <paramref name="item"/> is null</exception>
+        /// <exception cref="SqlException">Severity 16
+        ///     <para>State 10 : Firstname cannot be EMPTY</para>
+        ///     <para>State 11 : Lastname cannot be EMPTY</para>
+        ///     <para>State 12 : Login cannot be EMPTY</para>
+        ///     <para>State 13 : Login already exists</para>
+        ///     <para>State 255 : Error while create operator</para>
+        /// </exception>
         /// <returns>An OperatorModel describing the created operator</returns>
         public OperatorModel Insert(OperatorModel item)
         {
@@ -120,6 +127,12 @@ namespace LightStore.Dal
         /// </summary>
         /// <param name="item">An existing operator with filled properties included password</param>
         /// <exception cref="ArgumentNullException">Thrown when input <paramref name="item"/> is null</exception>
+        /// <exception cref="SqlException">Severity 16
+        ///     <para>State 10 : Firstname cannot be EMPTY</para>
+        ///     <para>State 11 : Lastname cannot be EMPTY</para>
+        ///     <para>State 12 : Operator x does no longer exist</para>
+        ///     <para>State 255 : Error while updating operator</para>
+        /// </exception>
         /// <returns>An OperatorModel describing the updated operator</returns>
         public OperatorModel Update(OperatorModel item)
         {
@@ -147,6 +160,9 @@ namespace LightStore.Dal
         /// Delete a specific operator
         /// </summary>
         /// <param name="id">Operator id to delete</param>
+        /// <exception cref="SqlException">Severity 16
+        ///     <para>State 255 : Operator x does no longer exist</para>
+        /// </exception>
         /// <returns>True in case of success</returns>
         public bool Delete(int id)
         {
@@ -161,16 +177,8 @@ namespace LightStore.Dal
 
                     connection.Open();
 
-                    try
-                    {
-                        int result = command.ExecuteNonQuery();
-                        return (result == 1);
-                    }
-                    catch (SqlException e)
-                    {
-                        if (e.State == 255 && e.Number == 16) return false;
-                        throw;
-                    }
+                    int result = command.ExecuteNonQuery();
+                    return (result == 1);
                 }
             }
         }
@@ -180,7 +188,11 @@ namespace LightStore.Dal
         /// </summary>
         /// <param name="login">Operator login</param>
         /// <param name="password">Current operator password</param>
-        /// <exception cref="SqlException">Thrown when login or password is wrong</exception>
+        /// <exception cref="ArgumentNullException">Thrown when input <paramref name="login"/> is null</exception>
+        /// <exception cref="SqlException">Severity 16
+        ///     <para>State 10 : Login and password does not match</para>
+        ///     <para>State 11 : Login and password does not match</para>
+        /// </exception>
         /// <returns>Matched operator data</returns>
         public OperatorModel LogIn(string login, string password)
         {
@@ -207,6 +219,11 @@ namespace LightStore.Dal
         /// </summary>
         /// <param name="id">Operator Id</param>
         /// <param name="password">New password for operator</param>
+        /// <exception cref="ArgumentNullException">Thrown when input <paramref name="id"/> is null</exception>
+        /// <exception cref="SqlException">Severity 16
+        ///     <para>State 12 : Operator x does no longer exist</para>
+        ///     <para>State 255 : Error while updating operator</para>
+        /// </exception>
         /// <returns>Updated operator</returns>
         public OperatorModel Update(int id, string password)
         {

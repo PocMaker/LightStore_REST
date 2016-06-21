@@ -49,6 +49,10 @@
     <Reference Include="Microsoft.ServiceModel.Web">
       <HintPath>..\..\Temp\AdventureWorksService\External Dependencies\Microsoft.ServiceModel.Web.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net452\RestSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.IdentityModel" />
@@ -78,9 +82,20 @@
   <ItemGroup>
     <Content Include="Service\Login.svc" />
     <Content Include="Service\Operator.svc" />
-    <Content Include="Web.config" />
+    <Content Include="Service\Product.svc" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dal\PackagingDal.cs" />
+    <Compile Include="Dal\ProductDal.cs" />
+    <Compile Include="Model\AIdEquatableT.cs" />
+    <Compile Include="Model\Captcha\CaptchaModel.cs" />
+    <Compile Include="Model\DefaultJsonString.cs" />
+    <Compile Include="Model\Product\PackagingModel.cs" />
+    <Compile Include="Model\Product\ProductModel.cs" />
+    <Compile Include="Model\Captcha\ReCaptchaModel.cs" />
     <Compile Include="ServiceConfig\BasicAuthenticationInvoker.cs" />
     <Compile Include="ServiceConfig\CustomUserNameValidator.cs" />
     <Compile Include="ServiceConfig\ExtendedWebHttpElement.cs" />
@@ -89,11 +104,11 @@
     <Compile Include="Dal\ABaseDal.cs" />
     <Compile Include="Dal\ICrudDalT.cs" />
     <Compile Include="Dal\OperatorDal.cs" />
-    <Compile Include="Model\CredentialModel.cs" />
-    <Compile Include="Model\IdIsPasswordDefinedModel.cs" />
+    <Compile Include="Model\Operator\CredentialModel.cs" />
+    <Compile Include="Model\Operator\IdIsPasswordDefinedModel.cs" />
     <Compile Include="Model\JsonFaultModel.cs" />
-    <Compile Include="Model\LoginModel.cs" />
-    <Compile Include="Model\OperatorModel.cs" />
+    <Compile Include="Model\Operator\LoginModel.cs" />
+    <Compile Include="Model\Operator\OperatorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\AServiceBase.cs" />
     <Compile Include="Service\IServiceCrudT.cs" />
@@ -103,11 +118,15 @@
     <Compile Include="Service\Operator.svc.cs">
       <DependentUpon>Operator.svc</DependentUpon>
     </Compile>
+    <Compile Include="Service\Product.svc.cs">
+      <DependentUpon>Product.svc</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

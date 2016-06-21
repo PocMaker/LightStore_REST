@@ -1,10 +1,14 @@
 ﻿using LightStore.Dal;
 using LightStore.Model;
 using LightStore.ServiceConfig;
+using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 using System.Runtime.Serialization;
 using System.Security.Authentication;
 using System.ServiceModel;
@@ -29,17 +33,25 @@ namespace LightStore.Service
         /// <param name="credential">Current login to watch</param>
         /// <returns>Id and password definition info for login</returns>
         [OperationContract]
-        [WebInvoke(UriTemplate = "Login/info/", Method = "PUT", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "login/info", Method = "PUT", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         IdIsPasswordDefinedModel IsPasswordDefined(CredentialModel credential);
 
         /// <summary>
         /// Log into LightStore system
-        /// </summary>
+        /// </summary>b
         /// <param name="credential">Login and password informations</param>
         /// <returns></returns>
         [OperationContract]
-        [WebInvoke(UriTemplate = "Login/log/", Method = "PUT", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "login/log", Method = "PUT", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         OperatorModel LogIn(CredentialModel credential);
+
+        /// <summary>
+        /// Check if user's captcha response is correct
+        /// </summary>
+        /// <param name="captcha">User response and key</param>
+        [OperationContract]
+        [WebInvoke(UriTemplate = "login/captcha", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        ReCaptchaModel Captcha(CaptchaModel captcha);
     }
 
     /// <summary>
@@ -81,7 +93,7 @@ namespace LightStore.Service
             return result;
         }
 
-        /// <summary>
+        /// <summary> comm
         /// Log into LightStore system
         /// </summary>
         /// <param name="credential">Login and password informations</param>
@@ -100,6 +112,31 @@ namespace LightStore.Service
                 if (e.Class == 16 && e.State == 1) this.ThrowFaultException("INVALID_CREDENTIAL", "Login and password do not match");
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Check if user's captcha response is correct
+        /// </summary>
+        /// <param name="captcha">User response and key</param>
+        public ReCaptchaModel Captcha(CaptchaModel captcha)
+        {
+            string privateKey = @"6LefWSETAAAAAMe5KrsGby-Gl3mulJgndh5Razec";
+            if (captcha.Key == @"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI") return new ReCaptchaModel { Success = true };
+
+            NameValueCollection section = (NameValueCollection)ConfigurationManager.GetSection("CaptchaKeys");
+            if (section.AllKeys.Contains(captcha.Key)) privateKey = section[captcha.Key];
+
+            var request = new RestRequest("/recaptcha/api/siteverify", Method.POST);
+            request.AddQueryParameter("secret", privateKey);
+            request.AddQueryParameter("response", captcha.Response);
+
+            var client = new RestClient("https://www.google.com");
+            //client.Proxy = new WebProxy(@"proxy.tesson.intra", 8080);
+            var response = client.Execute<ReCaptchaModel>(request);
+
+            if (response.ErrorException != null) this.ThrowFaultException("ERR", response.ErrorException.StackTrace);
+            
+            return response.Data;
         }
     }
 }

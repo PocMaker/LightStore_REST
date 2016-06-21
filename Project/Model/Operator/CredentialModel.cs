@@ -12,15 +12,21 @@ namespace LightStore.Model
     [DataContract]
     public sealed class CredentialModel
     {
-        /// <exclude/>
-        [DataMember(IsRequired =true)]
+        /// <summary>
+        /// Login/Pseudo for authentication (required)
+        /// </summary>
+        [DataMember]
         public string Login { get; set; }
 
-        /// <exclude/>
+        /// <summary>
+        /// Password for auuthentication
+        /// </summary>
         [DataMember]
         public string Password { get; set; }
 
-        /// <exclude/>
+        /// <summary>
+        /// New password if need to change it
+        /// </summary>
         [DataMember]
         public string NewPassword { get; set; }
     }

@@ -63,9 +63,14 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CloneT.cs" />
+    <Compile Include="Dal\PackagingDalTest.cs" />
+    <Compile Include="Dal\ProductDalTest.cs" />
     <Compile Include="Dal\OperatorDalTest.cs" />
+    <Compile Include="Model\PackagingModelTest.cs" />
+    <Compile Include="Model\ProductModelTest.cs" />
     <Compile Include="Model\OperatorModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\ProductTest.cs" />
     <Compile Include="Service\OperatorTest.cs" />
     <Compile Include="Service\LoginTest.cs" />
   </ItemGroup>
@@ -74,6 +79,9 @@
       <Project>{1F36E179-9F2C-45C7-8C03-51DBC503758D}</Project>
       <Name>LightStore</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
