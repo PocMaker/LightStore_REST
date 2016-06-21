@@ -12,7 +12,7 @@ namespace LightStore.Model
     /// </summary>
     public enum enmUnity
     {
-        /// <summary>
+        /// <summary> 
         /// Consumer sales unit
         /// </summary>
         CSU = 0,
