@@ -29,7 +29,7 @@ namespace LightStore.Service
         /// <returns>Products data</returns>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "products/", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "products", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new IList<ProductModel> Read();
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace LightStore.Service
         /// <returns>Product data</returns>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "products/{id}/", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "products/{id}", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new ProductModel ReadOne(string id);
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace LightStore.Service
         /// <returns>Product data after creation</returns>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "products/", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "products", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new ProductModel CreateOne(ProductModel data);
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace LightStore.Service
         /// <param name="id">Product ID to delete</param>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "products/{id}/", Method = "DELETE", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "products/{id}", Method = "DELETE", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new void DeleteOne(string id);
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace LightStore.Service
         /// <returns>Packagings data</returns>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "products/{productId}/packaging/", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "products/{productId}/packaging", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         IList<PackagingModel> ReadPac(string productId);
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace LightStore.Service
         /// <returns>Packaging data after creation</returns>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "products/{productId}/packaging/", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "products/{productId}/packaging", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         PackagingModel CreateOnePac(string productId, PackagingModel data);
 
         /// <summary>

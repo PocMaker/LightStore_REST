@@ -27,7 +27,7 @@ namespace LightStore.Service
         /// <returns>Operators data</returns>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "Operators/", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "operators", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new IList<OperatorModel> Read();
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace LightStore.Service
         /// <returns>Operator data</returns>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "Operators/{id}/", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "operators/{id}", Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new OperatorModel ReadOne(string id);
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace LightStore.Service
         /// <returns>Operator data after creation</returns>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "Operators/", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "operators", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new OperatorModel CreateOne(OperatorModel data);
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace LightStore.Service
         /// <returns>Operator data after update</returns>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "Operators/{id}/", Method = "PUT", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "operators/{id}", Method = "PUT", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new OperatorModel UpdateOne(OperatorModel data, string id);
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace LightStore.Service
         /// <param name="id">Operator ID to delete</param>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "Operators/{id}/", Method = "DELETE", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "operators/{id}", Method = "DELETE", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         new void DeleteOne(string id);
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace LightStore.Service
         /// <returns>Operator data after update</returns>
         [BasicAuthenticationInvoker]
         [OperationContract]
-        [WebInvoke(UriTemplate = "Operators/{id}/", Method = "PATCH", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(UriTemplate = "operators/{id}", Method = "PATCH", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         OperatorModel UpdatePassword(CredentialModel credential, string id);
     }
 
